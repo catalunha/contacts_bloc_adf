@@ -9,13 +9,30 @@ class HomePage extends StatelessWidget {
       appBar: AppBar(
         title: const Text('HomePage'),
       ),
-      body: Column(children: [
-        TextButton(
-            onPressed: () {
-              Navigator.of(context).pushNamed('/example');
-            },
-            child: const Text('Example'))
-      ]),
+      body: Center(
+        child: Column(
+          children: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pushNamed('/example');
+              },
+              child: const Text('Example'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pushNamed('/example2');
+              },
+              child: const Text('Example 2'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pushNamed('/contact');
+              },
+              child: const Text('Contact List'),
+            )
+          ],
+        ),
+      ),
     );
   }
 }
