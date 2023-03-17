@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'contacts/add/contact_add_page.dart';
+import 'contacts/addedit/contact_addedit_page.dart';
 import 'contacts/edit/contact_edit_page.dart';
 import 'contacts/models/contact_model.dart';
 import 'contacts/repositories/contact_repository.dart';
@@ -37,6 +38,11 @@ class MyApp extends StatelessWidget {
             final contact =
                 ModalRoute.of(context)!.settings.arguments as ContactModel;
             return ContactEditPage(contactModel: contact);
+          },
+          '/contact/addedit': (context) {
+            ContactModel? contact =
+                ModalRoute.of(context)!.settings.arguments as ContactModel?;
+            return ContactAddEditPage(contactModel: contact);
           },
           // '/example': (_) => RepositoryProvider(
           //       create: (context) => ExampleRepository(),

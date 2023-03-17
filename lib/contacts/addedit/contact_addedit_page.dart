@@ -4,44 +4,48 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../models/contact_model.dart';
 import '../repositories/contact_repository.dart';
 import '../widgets/loader.dart';
-import 'bloc/contact_edit_bloc.dart';
-import 'bloc/contact_edit_event.dart';
-import 'bloc/contact_edit_state.dart';
+import 'bloc/contact_addedit_bloc.dart';
+import 'bloc/contact_addedit_event.dart';
+import 'bloc/contact_addedit_state.dart';
 
-class ContactEditPage extends StatelessWidget {
-  final ContactModel contactModel;
-  const ContactEditPage({Key? key, required this.contactModel})
+class ContactAddEditPage extends StatelessWidget {
+  final ContactModel? contactModel;
+  const ContactAddEditPage({Key? key, required this.contactModel})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) =>
-          ContactEditBloc(contactRepository: context.read<ContactRepository>()),
-      child: ContactEditView(contactModel: contactModel),
+      create: (context) => ContactAddEditBloc(
+        contactRepository: context.read<ContactRepository>(),
+        contactInitial: contactModel,
+      ),
+      child: ContactAddEditView(contactModel: contactModel),
     );
   }
 }
 
-class ContactEditView extends StatefulWidget {
-  final ContactModel contactModel;
+class ContactAddEditView extends StatefulWidget {
+  final ContactModel? contactModel;
 
-  const ContactEditView({Key? key, required this.contactModel})
+  const ContactAddEditView({Key? key, required this.contactModel})
       : super(key: key);
 
   @override
-  State<ContactEditView> createState() => _ContactEditViewState();
+  State<ContactAddEditView> createState() => _ContactAddEditViewState();
 }
 
-class _ContactEditViewState extends State<ContactEditView> {
+class _ContactAddEditViewState extends State<ContactAddEditView> {
   final _formKey = GlobalKey<FormState>();
   final _nameTEC = TextEditingController();
   final _emailTEC = TextEditingController();
 
   @override
   void initState() {
-    _nameTEC.text = widget.contactModel.name ?? '';
-    _emailTEC.text = widget.contactModel.email;
+    if (widget.contactModel != null) {
+      _nameTEC.text = widget.contactModel?.name ?? '';
+      _emailTEC.text = widget.contactModel!.email;
+    }
     super.initState();
   }
 
@@ -54,20 +58,33 @@ class _ContactEditViewState extends State<ContactEditView> {
 
   @override
   Widget build(BuildContext context) {
+    // final isNewContact = context.select(
+    //     (ContactAddEditBloc contactAddEditBloc) =>
+    //         contactAddEditBloc.state.isNewContact);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Edit'),
+        title: BlocSelector<ContactAddEditBloc, ContactAddEditState, bool>(
+          selector: (state) => state.isNewContact,
+          builder: (context, isNewContact) =>
+              Text(isNewContact ? 'Add' : 'Edit'),
+        ),
       ),
-      body: BlocListener<ContactEditBloc, ContactEditState>(
+      // appBar: AppBar(
+      //   title: Text(widget.contactModel == null ? 'Add' : 'Edit'),
+      // ),
+      //       appBar: AppBar(
+      //   title: Text(isNewContact ? 'Add' : 'Edit'),
+      // ),
+      body: BlocListener<ContactAddEditBloc, ContactAddEditState>(
         listenWhen: (previous, current) {
-          return current.status == ContactEditStateStatus.success ||
-              current.status == ContactEditStateStatus.error;
+          return current.status == ContactAddEditStateStatus.success ||
+              current.status == ContactAddEditStateStatus.error;
         },
         listener: (context, state) {
-          if (state.status == ContactEditStateStatus.success) {
+          if (state.status == ContactAddEditStateStatus.success) {
             Navigator.of(context).pop();
           }
-          if (state.status == ContactEditStateStatus.error) {
+          if (state.status == ContactAddEditStateStatus.error) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text('${state.error}'),
@@ -103,9 +120,8 @@ class _ContactEditViewState extends State<ContactEditView> {
                 onPressed: () async {
                   final validate = _formKey.currentState?.validate() ?? false;
                   if (validate) {
-                    context.read<ContactEditBloc>().add(
-                          ContactEditEventSubmit(
-                            id: widget.contactModel.id,
+                    context.read<ContactAddEditBloc>().add(
+                          ContactAddEditEventSubmit(
                             name: _nameTEC.text,
                             email: _emailTEC.text,
                           ),
@@ -114,8 +130,9 @@ class _ContactEditViewState extends State<ContactEditView> {
                 },
                 child: const Text('Enviar'),
               ),
-              Loader<ContactEditBloc, ContactEditState>(selector: (state) {
-                return state.status == ContactEditStateStatus.loading;
+              Loader<ContactAddEditBloc, ContactAddEditState>(
+                  selector: (state) {
+                return state.status == ContactAddEditStateStatus.loading;
               })
             ],
           ),

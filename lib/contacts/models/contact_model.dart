@@ -2,11 +2,11 @@ import 'dart:convert';
 
 class ContactModel {
   final int? id;
-  final String name;
+  final String? name;
   final String email;
   ContactModel({
     this.id,
-    required this.name,
+    this.name,
     required this.email,
   });
 
@@ -28,7 +28,9 @@ class ContactModel {
     if (id != null) {
       result.addAll({'id': id});
     }
-    result.addAll({'name': name});
+    if (name != null) {
+      result.addAll({'name': name});
+    }
     result.addAll({'email': email});
 
     return result;
@@ -37,7 +39,7 @@ class ContactModel {
   factory ContactModel.fromMap(Map<String, dynamic> map) {
     return ContactModel(
       id: map['id']?.toInt(),
-      name: map['name'] ?? '',
+      name: map['name'],
       email: map['email'] ?? '',
     );
   }

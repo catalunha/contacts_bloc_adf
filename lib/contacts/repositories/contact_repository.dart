@@ -25,11 +25,15 @@ class ContactRepository {
   }
 
   Future<void> update(ContactModel contact) async {
+    await Future.delayed(const Duration(seconds: 2));
+
     await Dio().put('http://192.168.10.113:3031/contacts/${contact.id}',
         data: contact.toMap());
   }
 
   Future<void> delete(int contactId) async {
+    await Future.delayed(const Duration(seconds: 2));
+
     await Dio().delete('http://192.168.10.113:3031/contacts/$contactId');
   }
 }

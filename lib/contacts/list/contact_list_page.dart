@@ -32,9 +32,11 @@ class ContactListView extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          await Navigator.pushNamed(context, '/contact/add');
+          var blocTemp = context.read<ContactListBloc>();
+          // await Navigator.pushNamed(context, '/contact/add');
+          await Navigator.pushNamed(context, '/contact/addedit');
           // if (!context.mounted) return;
-          context.read<ContactListBloc>().add(ContactListEventFindAll());
+          blocTemp.add(ContactListEventFindAll());
         },
         child: const Icon(Icons.add),
       ),
@@ -77,21 +79,25 @@ class ContactListView extends StatelessWidget {
                           itemBuilder: (_, index) {
                             var contact = state.contacts[index];
                             return ListTile(
-                              title: Text(contact.name),
+                              title: Text(contact.name ?? "..."),
                               subtitle: Text('${contact.id}'),
                               onLongPress: () {
                                 context.read<ContactListBloc>().add(
                                     ContactListEventDelete(id: contact.id!));
                               },
                               onTap: () async {
+                                var blocTemp = context.read<ContactListBloc>();
+                                // await Navigator.pushNamed(
+                                //   context,
+                                //   '/contact/edit',
+                                //   arguments: contact,
+                                // );
                                 await Navigator.pushNamed(
                                   context,
-                                  '/contact/edit',
+                                  '/contact/addedit',
                                   arguments: contact,
                                 );
-                                context
-                                    .read<ContactListBloc>()
-                                    .add(ContactListEventFindAll());
+                                blocTemp.add(ContactListEventFindAll());
                               },
                             );
                           },
