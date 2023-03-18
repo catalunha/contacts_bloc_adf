@@ -87,16 +87,16 @@ class ContactListView extends StatelessWidget {
                               },
                               onTap: () async {
                                 var blocTemp = context.read<ContactListBloc>();
-                                // await Navigator.pushNamed(
-                                //   context,
-                                //   '/contact/edit',
-                                //   arguments: contact,
-                                // );
                                 await Navigator.pushNamed(
                                   context,
-                                  '/contact/addedit',
+                                  '/contact/edit',
                                   arguments: contact,
                                 );
+                                // await Navigator.pushNamed(
+                                //   context,
+                                //   '/contact/addedit',
+                                //   arguments: contact,
+                                // );
                                 blocTemp.add(ContactListEventFindAll());
                               },
                             );

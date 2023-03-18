@@ -34,11 +34,12 @@ class MyApp extends StatelessWidget {
           '/example2': (_) => const Example2Page(),
           '/contact': (_) => const ContactListPage(),
           '/contact/add': (_) => const ContactAddPage(),
-          '/contact/edit': (context) {
-            final contact =
-                ModalRoute.of(context)!.settings.arguments as ContactModel;
-            return ContactEditPage(contactModel: contact);
-          },
+          '/contact/edit': (_) => const ContactEditPage(),
+          //  '/contact/edit': (context) {
+          //   final contact =
+          //       ModalRoute.of(context)!.settings.arguments as ContactModel;
+          //   return ContactEditPage(contactModel: contact);
+          // },
           '/contact/addedit': (context) {
             ContactModel? contact =
                 ModalRoute.of(context)!.settings.arguments as ContactModel?;

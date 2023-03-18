@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 
 import '../models/contact_model.dart';
 import '../repositories/contact_repository.dart';
@@ -9,19 +10,35 @@ import 'bloc/contact_edit_event.dart';
 import 'bloc/contact_edit_state.dart';
 
 class ContactEditPage extends StatelessWidget {
-  final ContactModel contactModel;
-  const ContactEditPage({Key? key, required this.contactModel})
-      : super(key: key);
+  const ContactEditPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) =>
-          ContactEditBloc(contactRepository: context.read<ContactRepository>()),
-      child: ContactEditView(contactModel: contactModel),
-    );
+    return Provider(
+        create: (context) => ContactEditBloc(
+            contactRepository: context.read<ContactRepository>()),
+        builder: (context, child) {
+          final contact =
+              ModalRoute.of(context)!.settings.arguments as ContactModel;
+
+          return ContactEditView(contactModel: contact);
+        });
   }
 }
+// class ContactEditPage extends StatelessWidget {
+//   final ContactModel contactModel;
+//   const ContactEditPage({Key? key, required this.contactModel})
+//       : super(key: key);
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return BlocProvider(
+//       create: (context) =>
+//           ContactEditBloc(contactRepository: context.read<ContactRepository>()),
+//       child: ContactEditView(contactModel: contactModel),
+//     );
+//   }
+// }
 
 class ContactEditView extends StatefulWidget {
   final ContactModel contactModel;
